@@ -1,0 +1,12 @@
+# PocketBase data
+pb_data/
+
+# Node 
+node_modules/
+dist/
+
+# OS
+.DS_Store
+
+seed
+server
