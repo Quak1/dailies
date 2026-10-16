@@ -6,11 +6,10 @@ import (
 	"log"
 
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/osutils"
 
+	"github.com/Quak1/dailies/internal/extends"
 	_ "github.com/Quak1/dailies/migrations"
 )
 
@@ -29,10 +28,7 @@ func main() {
 		Automigrate: osutils.IsProbablyGoRun(),
 	})
 
-	app.OnServe().BindFunc(func(e *core.ServeEvent) error {
-		e.Router.GET("/{path...}", apis.Static(flatFS, true))
-		return e.Next()
-	})
+	app.OnServe().BindFunc(extends.SetupRoutes(app, flatFS))
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
