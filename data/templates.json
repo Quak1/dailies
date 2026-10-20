@@ -1,0 +1,216 @@
+[
+  {
+    "name": "Aion 2",
+    "description": "Eorzea daily duty roulettes, beast tribes, and weekly raid lockouts.",
+    "image_url": "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?w=600&auto=format&fit=crop&q=80",
+    "reset_hour_utc": 15,
+    "reset_minute_utc": 0,
+    "weekly_reset_day": 2,
+    "tasks": [
+      {
+        "title": "Expert Roulette",
+        "description": "Daily tomestones of comedy",
+        "cadence": "daily",
+        "sort_order": 1
+      },
+      {
+        "title": "Leveling Roulette",
+        "description": "Daily EXP & seals",
+        "cadence": "daily",
+        "sort_order": 2
+      },
+      {
+        "title": "Frontline PVP",
+        "description": "Daily Series EXP & wolf marks",
+        "cadence": "daily",
+        "sort_order": 3
+      },
+      {
+        "title": "Tribal Quests",
+        "description": "Daily beast tribe allowances",
+        "cadence": "daily",
+        "sort_order": 4
+      },
+      {
+        "title": "Grand Company Turn-ins",
+        "description": "Daily crafting/gathering exp",
+        "cadence": "daily",
+        "sort_order": 5
+      },
+      {
+        "title": "Savage Raid Clears",
+        "description": "Weekly raid coffers lockouts",
+        "cadence": "weekly",
+        "sort_order": 1
+      },
+      {
+        "title": "Custom Deliveries",
+        "description": "Weekly crafting scrips (12 allowances)",
+        "cadence": "weekly",
+        "sort_order": 2
+      },
+      {
+        "title": "Faux Hollows",
+        "description": "Weekly unreal trial retelling",
+        "cadence": "weekly",
+        "sort_order": 3
+      },
+      {
+        "title": "Wondrous Tails",
+        "description": "Weekly Khloe journal sticker board",
+        "cadence": "weekly",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "name": "Genshin Impact",
+    "description": "Teyvat daily commissions, resin expenditure, and weekly trounce domains.",
+    "image_url": "https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80",
+    "reset_hour_utc": 4,
+    "reset_minute_utc": 0,
+    "weekly_reset_day": 1,
+    "tasks": [
+      {
+        "title": "4 Daily Commissions",
+        "description": "Complete daily quests for primogems",
+        "cadence": "daily",
+        "sort_order": 1
+      },
+      {
+        "title": "Claim Katheryne Bonus",
+        "description": "Collect extra 20 primogems & keys",
+        "cadence": "daily",
+        "sort_order": 2
+      },
+      {
+        "title": "Spend Original Resin",
+        "description": "Condense resin or farm artifact domains",
+        "cadence": "daily",
+        "sort_order": 3
+      },
+      {
+        "title": "Expedition Dispatches",
+        "description": "Claim daily expedition ores and mora",
+        "cadence": "daily",
+        "sort_order": 4
+      },
+      {
+        "title": "3 Trounce Domains",
+        "description": "Claim half-cost weekly boss materials",
+        "cadence": "weekly",
+        "sort_order": 1
+      },
+      {
+        "title": "Reputation Requests & Bounties",
+        "description": "3 bounties + 3 requests for city EXP",
+        "cadence": "weekly",
+        "sort_order": 2
+      },
+      {
+        "title": "Buy Realm Depot Items",
+        "description": "Purchase transient resin & exp books",
+        "cadence": "weekly",
+        "sort_order": 3
+      },
+      {
+        "title": "Spiral Abyss / Imaginarium",
+        "description": "Clear floors for 600+ primogems",
+        "cadence": "weekly",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "name": "World of Warcraft",
+    "description": "Azeroth world quests, delve bounties, and weekly Great Vault objectives.",
+    "image_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80",
+    "reset_hour_utc": 15,
+    "reset_minute_utc": 0,
+    "weekly_reset_day": 2,
+    "tasks": [
+      {
+        "title": "Daily Special Assignment",
+        "description": "Complete World Quest emissary",
+        "cadence": "daily",
+        "sort_order": 1
+      },
+      {
+        "title": "Heroic Dungeon Daily",
+        "description": "Daily valor stones bonus",
+        "cadence": "daily",
+        "sort_order": 2
+      },
+      {
+        "title": "Weekly Pinnacle Cache",
+        "description": "Turn in weekly event quest",
+        "cadence": "weekly",
+        "sort_order": 1
+      },
+      {
+        "title": "4 Tier 8 Delves",
+        "description": "Open bountiful chests with restored coffer keys",
+        "cadence": "weekly",
+        "sort_order": 2
+      },
+      {
+        "title": "World Boss Kill",
+        "description": "Defeat weekly outdoor world boss",
+        "cadence": "weekly",
+        "sort_order": 3
+      },
+      {
+        "title": "Fill Great Vault Slots",
+        "description": "Complete Mythic+ dungeons & raid bosses",
+        "cadence": "weekly",
+        "sort_order": 4
+      }
+    ]
+  },
+  {
+    "name": "Destiny 2",
+    "description": "Tower bounties, seasonal activities, Nightfall strikes, and weekly raid rotators.",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+    "reset_hour_utc": 17,
+    "reset_minute_utc": 0,
+    "weekly_reset_day": 2,
+    "tasks": [
+      {
+        "title": "Banshee-44 Gunsmith Bounties",
+        "description": "Daily enhancement cores",
+        "cadence": "daily",
+        "sort_order": 1
+      },
+      {
+        "title": "Ritual Pathfinder Progress",
+        "description": "Daily pathfinder completions",
+        "cadence": "daily",
+        "sort_order": 2
+      },
+      {
+        "title": "3 Vanguard Strikes",
+        "description": "Complete strikes matching surge for Pinnacle",
+        "cadence": "weekly",
+        "sort_order": 1
+      },
+      {
+        "title": "Nightfall 100k Score",
+        "description": "Complete high-difficulty Nightfall",
+        "cadence": "weekly",
+        "sort_order": 2
+      },
+      {
+        "title": "Featured Pinnacle Raid",
+        "description": "Clear featured weekly rotator raid",
+        "cadence": "weekly",
+        "sort_order": 3
+      },
+      {
+        "title": "Seasonal Story Quest",
+        "description": "Progress weekly story chapter",
+        "cadence": "weekly",
+        "sort_order": 4
+      }
+    ]
+  }
+]
