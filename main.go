@@ -7,7 +7,6 @@ import (
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-	"github.com/pocketbase/pocketbase/tools/osutils"
 
 	"github.com/Quak1/dailies/internal/extends"
 	_ "github.com/Quak1/dailies/migrations"
@@ -25,7 +24,7 @@ func main() {
 	app := pocketbase.New()
 
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
-		Automigrate: osutils.IsProbablyGoRun(),
+		Automigrate: true,
 	})
 
 	app.OnServe().BindFunc(extends.SetupRoutes(app, flatFS))
