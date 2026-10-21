@@ -1,0 +1,29 @@
+services:
+  dailies:
+    image: dailies:latest
+    container_name: dailies-tracker
+    restart: unless-stopped
+    networks:
+      - caddy_net
+    volumes:
+      - dailies_data:/app/pb_data
+    environment:
+      - TZ=UTC
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    labels:
+      caddy: dailies.hatvault.win
+      caddy.reverse_proxy: "{{upstreams 8090}}"
+      caddy.request_body.max_size: 10MB
+      caddy.reverse_proxy.transport: http
+      caddy.reverse_proxy.transport.read_timeout: 360s
+
+volumes:
+  dailies_data:
+    name: dailies_pb_data
+
+networks:
+  caddy_net:
+    name: caddy_net
