@@ -270,7 +270,8 @@ async function handleDeleteTask(taskId: string, templateId: string) {
       v-if="activeTemplateForTask"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
     >
-      <div
+      <form
+        @submit.prevent="handleAddTask"
         class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-6 space-y-4"
       >
         <h3 class="text-lg font-bold text-white">
@@ -315,20 +316,21 @@ async function handleDeleteTask(taskId: string, templateId: string) {
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button
+            type="button"
             @click="activeTemplateForTask = null"
             class="px-4 py-2 rounded-xl text-sm font-medium text-zinc-400 hover:text-white"
           >
             Cancel
           </button>
           <button
-            @click="handleAddTask"
+            type="submit"
             :disabled="!taskTitle.trim()"
-            class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white"
+            class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white"
           >
             Add Task
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
