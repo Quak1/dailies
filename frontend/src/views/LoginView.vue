@@ -21,7 +21,9 @@ async function handleLogin() {
   try {
     await authStore.login(username.value.trim(), password.value);
     const redirect = (route.query.redirect as string) || "/";
-    router.push(redirect);
+    await router.push(
+      redirect === "/login" || redirect === "/register" ? "/" : redirect,
+    );
   } catch (err: any) {
     error.value = err?.message || "Invalid username or password";
   } finally {

@@ -30,7 +30,7 @@ async function handleRegister() {
       password.value,
       passwordConfirm.value,
     );
-    router.push("/");
+    await router.push("/");
   } catch (err: any) {
     error.value =
       err?.message || "Registration failed. Username may already be in use.";

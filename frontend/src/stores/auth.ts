@@ -12,7 +12,9 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = model as unknown as User;
   });
 
-  const isAuthenticated = computed(() => pb.authStore.isValid);
+  const isAuthenticated = computed(
+    () => Boolean(token.value) && pb.authStore.isValid,
+  );
   const isAdmin = computed(() => user.value?.role === "admin");
 
   async function login(identity: string, password: string) {
