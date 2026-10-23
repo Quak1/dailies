@@ -6,6 +6,10 @@
   color-scheme: dark;
 }
 
+html {
+  font-size: 112.5%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
