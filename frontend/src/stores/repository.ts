@@ -29,9 +29,14 @@ export const useRepositoryStore = defineStore("repository", () => {
 
       const tasksByTemplate = new Map<string, TemplateTask[]>();
       fetchedTasks.forEach((task) => {
-        const list = tasksByTemplate.get(task.game_template) || [];
-        list.push(task);
-        tasksByTemplate.set(task.game_template, list);
+        const templateId = task.template_id || task.game_template;
+        if (templateId) {
+          if (!task.template_id) task.template_id = templateId;
+          if (!task.game_template) task.game_template = templateId;
+          const list = tasksByTemplate.get(templateId) || [];
+          list.push(task);
+          tasksByTemplate.set(templateId, list);
+        }
       });
 
       templates.value = fetchedTemplates.map((template) => ({
@@ -119,12 +124,16 @@ export const useRepositoryStore = defineStore("repository", () => {
     const existingCount = tmpl?.expand?.template_tasks?.length || 0;
 
     const created = await pb.collection("template_tasks").create<TemplateTask>({
-      game_template: gameTemplateId,
+      template_id: gameTemplateId,
       title: data.title,
       description: data.description || "",
       cadence: data.cadence,
       sort_order: existingCount + 1,
     });
+
+    if (!created.game_template) {
+      created.game_template = created.template_id;
+    }
 
     if (tmpl) {
       if (!tmpl.expand) tmpl.expand = {};

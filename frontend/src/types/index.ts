@@ -23,7 +23,8 @@ export interface GameTemplate {
 
 export interface TemplateTask {
   id: string;
-  game_template: string;
+  template_id: string;
+  game_template?: string;
   title: string;
   description?: string;
   cadence: "daily" | "weekly";
