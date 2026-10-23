@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRepositoryStore } from '@/stores/repository'
-import { resolveImageUrl } from '@/lib/pocketbase'
-import { Shield, Plus, Trash2 } from 'lucide-vue-next'
-import type { GameTemplate } from '@/types'
+import { ref, onMounted } from "vue";
+import { useRepositoryStore } from "@/stores/repository";
+import { resolveImageUrl } from "@/lib/pocketbase";
+import { Shield, Plus, Trash2 } from "lucide-vue-next";
+import type { GameTemplate } from "@/types";
 
-const repoStore = useRepositoryStore()
+const repoStore = useRepositoryStore();
 
-const showAddTemplate = ref(false)
-const name = ref('')
-const bannerImageUrl = ref('')
-const resetHourUTC = ref(0)
-const resetMinuteUTC = ref(0)
-const weeklyResetDay = ref(2)
+const showAddTemplate = ref(false);
+const name = ref("");
+const bannerImageUrl = ref("");
+const resetHourUTC = ref(0);
+const resetMinuteUTC = ref(0);
+const weeklyResetDay = ref(2);
 
 // Task creation modal/state
-const activeTemplateForTask = ref<GameTemplate | null>(null)
-const taskTitle = ref('')
-const taskDesc = ref('')
-const taskCadence = ref<'daily' | 'weekly'>('daily')
+const activeTemplateForTask = ref<GameTemplate | null>(null);
+const taskTitle = ref("");
+const taskDesc = ref("");
+const taskCadence = ref<"daily" | "weekly">("daily");
 
 onMounted(async () => {
-  await repoStore.fetchTemplates()
-})
+  await repoStore.fetchTemplates();
+});
 
 async function handleCreateTemplate() {
-  if (!name.value.trim()) return
+  if (!name.value.trim()) return;
   try {
     await repoStore.createTemplate({
       name: name.value.trim(),
@@ -33,53 +33,58 @@ async function handleCreateTemplate() {
       reset_hour_utc: Number(resetHourUTC.value),
       reset_minute_utc: Number(resetMinuteUTC.value),
       weekly_reset_day: Number(weeklyResetDay.value),
-      sort_order: repoStore.templates.length + 1
-    })
-    name.value = ''
-    bannerImageUrl.value = ''
-    showAddTemplate.value = false
+      sort_order: repoStore.templates.length + 1,
+    });
+    name.value = "";
+    bannerImageUrl.value = "";
+    showAddTemplate.value = false;
   } catch (err: any) {
-    alert(err?.message || 'Failed to create template')
+    alert(err?.message || "Failed to create template");
   }
 }
 
 async function handleDeleteTemplate(id: string) {
-  if (confirm('Are you sure you want to delete this template?')) {
-    await repoStore.deleteTemplate(id)
+  if (confirm("Are you sure you want to delete this template?")) {
+    await repoStore.deleteTemplate(id);
   }
 }
 
 async function handleAddTask() {
-  if (!activeTemplateForTask.value || !taskTitle.value.trim()) return
+  if (!activeTemplateForTask.value || !taskTitle.value.trim()) return;
   try {
     await repoStore.createTemplateTask(activeTemplateForTask.value.id, {
       title: taskTitle.value.trim(),
       description: taskDesc.value.trim() || undefined,
-      cadence: taskCadence.value
-    })
-    taskTitle.value = ''
-    taskDesc.value = ''
-    activeTemplateForTask.value = null
+      cadence: taskCadence.value,
+    });
+    taskTitle.value = "";
+    taskDesc.value = "";
+    activeTemplateForTask.value = null;
   } catch (err: any) {
-    alert(err?.message || 'Failed to add task to template')
+    alert(err?.message || "Failed to add task to template");
   }
 }
 
 async function handleDeleteTask(taskId: string, templateId: string) {
-  await repoStore.deleteTemplateTask(taskId, templateId)
+  await repoStore.deleteTemplateTask(taskId, templateId);
 }
 </script>
 
 <template>
   <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
-    <div class="flex items-center justify-between pb-6 border-b border-zinc-800">
+    <div
+      class="flex items-center justify-between pb-6 border-b border-zinc-800"
+    >
       <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+        <h1
+          class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5"
+        >
           <Shield class="w-7 h-7 text-indigo-400" />
           <span>Curated Repository Admin</span>
         </h1>
         <p class="text-sm text-zinc-400 mt-1">
-          Manage system-level game templates and default tasks that all players can clone.
+          Manage system-level game templates and default tasks that all players
+          can clone.
         </p>
       </div>
 
@@ -93,11 +98,19 @@ async function handleDeleteTask(taskId: string, templateId: string) {
     </div>
 
     <!-- Add Template Form Modal -->
-    <div v-if="showAddTemplate" class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-4">
-      <h3 class="text-lg font-bold text-white">Create New Curated Game Template</h3>
+    <div
+      v-if="showAddTemplate"
+      class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-4"
+    >
+      <h3 class="text-lg font-bold text-white">
+        Create New Curated Game Template
+      </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Game Name</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Game Name</label
+          >
           <input
             v-model="name"
             type="text"
@@ -106,7 +119,10 @@ async function handleDeleteTask(taskId: string, templateId: string) {
           />
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Banner Image URL</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Banner Image URL</label
+          >
           <input
             v-model="bannerImageUrl"
             type="url"
@@ -115,7 +131,10 @@ async function handleDeleteTask(taskId: string, templateId: string) {
           />
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">UTC Reset (Hour / Minute)</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >UTC Reset (Hour / Minute)</label
+          >
           <div class="flex gap-2">
             <input
               v-model.number="resetHourUTC"
@@ -136,7 +155,10 @@ async function handleDeleteTask(taskId: string, templateId: string) {
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Weekly Reset Day (0=Sun, 2=Tue)</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Weekly Reset Day (0=Sun, 2=Tue)</label
+          >
           <input
             v-model.number="weeklyResetDay"
             type="number"
@@ -179,7 +201,11 @@ async function handleDeleteTask(taskId: string, templateId: string) {
             <div>
               <h3 class="text-lg font-bold text-white">{{ tmpl.name }}</h3>
               <p class="text-xs text-zinc-400 font-mono">
-                Daily Reset: {{ String(tmpl.reset_hour_utc).padStart(2, '0') }}:{{ String(tmpl.reset_minute_utc).padStart(2, '0') }} UTC · Weekly Day: {{ tmpl.weekly_reset_day }}
+                Daily Reset:
+                {{ String(tmpl.reset_hour_utc).padStart(2, "0") }}:{{
+                  String(tmpl.reset_minute_utc).padStart(2, "0")
+                }}
+                UTC · Weekly Day: {{ tmpl.weekly_reset_day }}
               </p>
             </div>
           </div>
@@ -203,17 +229,25 @@ async function handleDeleteTask(taskId: string, templateId: string) {
 
         <!-- Tasks list -->
         <div class="border-t border-zinc-800/80 pt-3 space-y-1.5">
-          <p class="text-xs font-semibold uppercase tracking-wider text-zinc-500">Default Tasks ({{ (tmpl.expand?.template_tasks || []).length }})</p>
+          <p
+            class="text-xs font-semibold uppercase tracking-wider text-zinc-500"
+          >
+            Default Tasks ({{ (tmpl.expand?.template_tasks || []).length }})
+          </p>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             <div
-              v-for="task in (tmpl.expand?.template_tasks || [])"
+              v-for="task in tmpl.expand?.template_tasks || []"
               :key="task.id"
               class="flex items-center justify-between p-2 rounded-lg bg-zinc-950/70 border border-zinc-800 text-xs"
             >
               <div class="flex items-center gap-2 truncate flex-1 min-w-0 mr-2">
                 <span
                   class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase shrink-0"
-                  :class="task.cadence === 'daily' ? 'bg-amber-500/20 text-amber-300' : 'bg-indigo-500/20 text-indigo-300'"
+                  :class="
+                    task.cadence === 'daily'
+                      ? 'bg-amber-500/20 text-amber-300'
+                      : 'bg-indigo-500/20 text-indigo-300'
+                  "
                 >
                   {{ task.cadence }}
                 </span>
@@ -232,11 +266,21 @@ async function handleDeleteTask(taskId: string, templateId: string) {
     </div>
 
     <!-- Add Task Modal -->
-    <div v-if="activeTemplateForTask" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-6 space-y-4">
-        <h3 class="text-lg font-bold text-white">Add Task to {{ activeTemplateForTask.name }}</h3>
+    <div
+      v-if="activeTemplateForTask"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+    >
+      <div
+        class="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-md p-6 space-y-4"
+      >
+        <h3 class="text-lg font-bold text-white">
+          Add Task to {{ activeTemplateForTask.name }}
+        </h3>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Title</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Title</label
+          >
           <input
             v-model="taskTitle"
             type="text"
@@ -245,7 +289,10 @@ async function handleDeleteTask(taskId: string, templateId: string) {
           />
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Description (optional)</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Description (optional)</label
+          >
           <input
             v-model="taskDesc"
             type="text"
@@ -254,7 +301,10 @@ async function handleDeleteTask(taskId: string, templateId: string) {
           />
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Cadence</label>
+          <label
+            class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1"
+            >Cadence</label
+          >
           <select
             v-model="taskCadence"
             class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-indigo-500"

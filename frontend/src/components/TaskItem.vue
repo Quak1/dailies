@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Check, Trash2, GripVertical, ChevronUp, ChevronDown } from 'lucide-vue-next'
-import { isTaskCompleted } from '@/lib/reset-calculator'
-import type { Task, UserGame } from '@/types'
+import { computed } from "vue";
+import {
+  Check,
+  Trash2,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-vue-next";
+import { isTaskCompleted } from "@/lib/reset-calculator";
+import type { Task, UserGame } from "@/types";
 
 const props = defineProps<{
-  task: Task
-  game: UserGame
-  readOnly?: boolean
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-}>()
+  task: Task;
+  game: UserGame;
+  readOnly?: boolean;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'toggle', task: Task): void
-  (e: 'delete', taskId: string): void
-  (e: 'move-up'): void
-  (e: 'move-down'): void
-}>()
+  (e: "toggle", task: Task): void;
+  (e: "delete", taskId: string): void;
+  (e: "move-up"): void;
+  (e: "move-down"): void;
+}>();
 
 const isCompleted = computed(() => {
   return isTaskCompleted(
@@ -25,24 +31,24 @@ const isCompleted = computed(() => {
     props.task.cadence,
     props.game.reset_hour_utc,
     props.game.reset_minute_utc,
-    props.game.weekly_reset_day
-  )
-})
+    props.game.weekly_reset_day,
+  );
+});
 
 function handleToggle() {
-  if (props.readOnly) return
-  emit('toggle', props.task)
+  if (props.readOnly) return;
+  emit("toggle", props.task);
 }
 </script>
 
 <template>
-  <div 
+  <div
     class="group flex items-center justify-between p-2.5 rounded-xl border transition-all duration-200"
     :class="[
-      isCompleted 
-        ? 'bg-zinc-900/40 border-zinc-800/60 opacity-60' 
+      isCompleted
+        ? 'bg-zinc-900/40 border-zinc-800/60 opacity-60'
         : 'bg-zinc-900/90 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-850',
-      props.readOnly ? 'cursor-default' : 'cursor-pointer'
+      props.readOnly ? 'cursor-default' : 'cursor-pointer',
     ]"
     @click="handleToggle"
   >
@@ -61,9 +67,11 @@ function handleToggle() {
       <button
         type="button"
         class="w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0"
-        :class="isCompleted 
-          ? 'bg-emerald-600 border-emerald-500 text-white' 
-          : 'border-zinc-700 bg-zinc-800 hover:border-zinc-500 text-transparent'"
+        :class="
+          isCompleted
+            ? 'bg-emerald-600 border-emerald-500 text-white'
+            : 'border-zinc-700 bg-zinc-800 hover:border-zinc-500 text-transparent'
+        "
         :disabled="props.readOnly"
         :aria-label="props.task.title"
       >
@@ -72,20 +80,26 @@ function handleToggle() {
 
       <!-- Task info -->
       <div class="min-w-0 flex-1">
-        <p 
+        <p
           class="text-sm font-medium leading-snug truncate select-none transition-colors"
           :class="isCompleted ? 'line-through text-zinc-400' : 'text-zinc-100'"
         >
           {{ props.task.title }}
         </p>
-        <p v-if="props.task.description" class="text-xs text-zinc-400 truncate mt-0.5">
+        <p
+          v-if="props.task.description"
+          class="text-xs text-zinc-400 truncate mt-0.5"
+        >
           {{ props.task.description }}
         </p>
       </div>
     </div>
 
     <!-- Actions (only if not read-only) -->
-    <div v-if="!props.readOnly" class="flex items-center gap-0.5 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
+    <div
+      v-if="!props.readOnly"
+      class="flex items-center gap-0.5 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity ml-2 shrink-0"
+    >
       <!-- Move Up -->
       <button
         type="button"

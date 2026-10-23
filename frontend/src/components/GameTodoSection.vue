@@ -1,47 +1,50 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Check, Trash2, Plus, Calendar } from 'lucide-vue-next'
-import type { Todo, UserGame } from '@/types'
+import { ref, computed } from "vue";
+import { Check, Trash2, Plus, Calendar } from "lucide-vue-next";
+import type { Todo, UserGame } from "@/types";
 
 const props = defineProps<{
-  game: UserGame
-  readOnly?: boolean
-}>()
+  game: UserGame;
+  readOnly?: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'add-todo', data: { title: string; notes?: string; dueDate?: string }): void
-  (e: 'toggle-todo', todo: Todo): void
-  (e: 'delete-todo', todoId: string): void
-}>()
+  (
+    e: "add-todo",
+    data: { title: string; notes?: string; dueDate?: string },
+  ): void;
+  (e: "toggle-todo", todo: Todo): void;
+  (e: "delete-todo", todoId: string): void;
+}>();
 
-const todos = computed(() => props.game.expand?.todos || [])
+const todos = computed(() => props.game.expand?.todos || []);
 
 // New Todo form state
-const isAdding = ref(false)
-const newTitle = ref('')
-const newNotes = ref('')
-const newDueDate = ref('')
+const isAdding = ref(false);
+const newTitle = ref("");
+const newNotes = ref("");
+const newDueDate = ref("");
 
 function handleAdd() {
-  if (!newTitle.value.trim()) return
-  emit('add-todo', {
+  if (!newTitle.value.trim()) return;
+  emit("add-todo", {
     title: newTitle.value.trim(),
     notes: newNotes.value.trim() || undefined,
-    dueDate: newDueDate.value || undefined
-  })
-  newTitle.value = ''
-  newNotes.value = ''
-  newDueDate.value = ''
-  isAdding.value = false
+    dueDate: newDueDate.value || undefined,
+  });
+  newTitle.value = "";
+  newNotes.value = "";
+  newDueDate.value = "";
+  isAdding.value = false;
 }
 
 function formatDate(dateStr?: string): string {
-  if (!dateStr) return ''
+  if (!dateStr) return "";
   try {
-    const d = new Date(dateStr)
-    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   } catch {
-    return ''
+    return "";
   }
 }
 </script>
@@ -51,8 +54,14 @@ function formatDate(dateStr?: string): string {
     <!-- Header & Add button -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Goals & Milestones</span>
-        <span class="text-xs px-1.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 font-mono">{{ todos.length }}</span>
+        <span
+          class="text-xs font-semibold uppercase tracking-wider text-zinc-400"
+          >Goals & Milestones</span
+        >
+        <span
+          class="text-xs px-1.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 font-mono"
+          >{{ todos.length }}</span
+        >
       </div>
 
       <button
@@ -67,7 +76,10 @@ function formatDate(dateStr?: string): string {
     </div>
 
     <!-- Inline Add Form -->
-    <div v-if="isAdding" class="p-3 bg-zinc-950 border border-zinc-700 rounded-xl space-y-2.5">
+    <div
+      v-if="isAdding"
+      class="p-3 bg-zinc-950 border border-zinc-700 rounded-xl space-y-2.5"
+    >
       <input
         v-model="newTitle"
         type="text"
@@ -84,7 +96,9 @@ function formatDate(dateStr?: string): string {
       ></textarea>
 
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-xs text-zinc-400">
+        <div
+          class="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-xs text-zinc-400"
+        >
           <Calendar class="w-3.5 h-3.5" />
           <input
             v-model="newDueDate"
@@ -114,7 +128,10 @@ function formatDate(dateStr?: string): string {
     </div>
 
     <!-- Empty State -->
-    <div v-if="todos.length === 0 && !isAdding" class="py-6 text-center text-zinc-500 text-xs">
+    <div
+      v-if="todos.length === 0 && !isAdding"
+      class="py-6 text-center text-zinc-500 text-xs"
+    >
       No long-term milestones or goals added for this game yet.
     </div>
 
@@ -125,10 +142,10 @@ function formatDate(dateStr?: string): string {
         :key="todo.id"
         class="group flex items-start justify-between p-2.5 rounded-xl border transition-all duration-200"
         :class="[
-          todo.completed 
-            ? 'bg-zinc-900/40 border-zinc-800/60 opacity-60' 
+          todo.completed
+            ? 'bg-zinc-900/40 border-zinc-800/60 opacity-60'
             : 'bg-zinc-900/90 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-850',
-          props.readOnly ? 'cursor-default' : 'cursor-pointer'
+          props.readOnly ? 'cursor-default' : 'cursor-pointer',
         ]"
         @click="!props.readOnly && emit('toggle-todo', todo)"
       >
@@ -136,26 +153,33 @@ function formatDate(dateStr?: string): string {
           <button
             type="button"
             class="mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-colors shrink-0"
-            :class="todo.completed 
-              ? 'bg-emerald-600 border-emerald-500 text-white' 
-              : 'border-zinc-700 bg-zinc-800 hover:border-zinc-500 text-transparent'"
+            :class="
+              todo.completed
+                ? 'bg-emerald-600 border-emerald-500 text-white'
+                : 'border-zinc-700 bg-zinc-800 hover:border-zinc-500 text-transparent'
+            "
             :disabled="props.readOnly"
           >
             <Check class="w-3.5 h-3.5 stroke-[3]" />
           </button>
 
           <div class="min-w-0 flex-1">
-            <p 
+            <p
               class="text-sm font-medium leading-snug truncate select-none transition-colors"
-              :class="todo.completed ? 'line-through text-zinc-400' : 'text-zinc-100'"
+              :class="
+                todo.completed ? 'line-through text-zinc-400' : 'text-zinc-100'
+              "
             >
               {{ todo.title }}
             </p>
-            <p v-if="todo.notes" class="text-xs text-zinc-400 mt-1 whitespace-pre-wrap">
+            <p
+              v-if="todo.notes"
+              class="text-xs text-zinc-400 mt-1 whitespace-pre-wrap"
+            >
               {{ todo.notes }}
             </p>
-            <span 
-              v-if="todo.due_date" 
+            <span
+              v-if="todo.due_date"
               class="inline-flex items-center gap-1 mt-1 text-[11px] text-zinc-500 font-mono"
             >
               <Calendar class="w-3 h-3" />
