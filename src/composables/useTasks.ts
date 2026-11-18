@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-import type { CategoryType, Collection, Task } from "@/lib/models";
+import type { CategoryType, Collection, Task } from "../models";
 
 const storageKey = "collections";
 
@@ -34,6 +34,7 @@ function createCollection(name: string, banner?: string) {
 
 function removeCollection(collectionName: string) {
   delete collections.value[collectionName];
+  saveToStorage();
 }
 
 function addTask(
@@ -81,12 +82,15 @@ function setTaskCount(
 
   if (count > task.maxCount) task.count = task.maxCount;
   else task.count = count;
+
+  saveToStorage();
 }
 
 function resetTasks(collectionName: string, type: CategoryType) {
   collections.value[collectionName][type].tasks.forEach((task) => {
     task.count = 0;
   });
+  saveToStorage();
 }
 
 export function useTasks() {

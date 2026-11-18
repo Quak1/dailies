@@ -1,14 +1,7 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
 @import url("https://fonts.googleapis.com/css2?family=DM%20Sans:wght@300;400;500;600;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Source%20Serif%204:wght@300;400;500;600;700;800&display=swap");
-
-@layer base {
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-}
+@import "tailwindcss";
+@import "@nuxt/ui";
 
 @theme {
   --font-sans: 'DM Sans', sans-serif;
@@ -42,9 +35,24 @@
 
 /* until v5 ships --ui-font-heading */
 @layer base {
+  html {
+    font-size: 18px;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
   }
+
+  h1 { @apply text-4xl font-extrabold tracking-tight; }
+  h2 { @apply text-3xl font-semibold tracking-tight; }
+  h3 { @apply text-2xl font-semibold tracking-tight; }
+  h4 { @apply text-xl font-semibold tracking-tight; }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+}
+
 }
 
 :root {
