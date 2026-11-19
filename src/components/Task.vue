@@ -21,6 +21,11 @@ function handleCheck(value: boolean | "indeterminate") {
 function handleCount(value: number) {
   setTaskCount(props.collection, props.category, props.task.id, value);
 }
+
+function handleMax() {
+  count.value = props.task.maxCount;
+  handleCount(count.value);
+}
 </script>
 
 <template>
@@ -60,7 +65,7 @@ function handleCount(value: number) {
 
       <UButton
         :label="`Max: ${task.maxCount}`"
-        @click="count = task.maxCount"
+        @click="handleMax"
         variant="outline"
         size="xs"
         class="ml-1"
