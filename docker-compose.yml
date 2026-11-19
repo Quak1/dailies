@@ -1,0 +1,15 @@
+services:
+  web:
+    image: dailies:latest
+    container_name: dailies
+    build: .
+    networks:
+      - caddy_net
+    labels:
+      caddy: dailies.hatvault.win
+      caddy.reverse_proxy: "{{upstreams 80}}"
+    restart: unless-stopped
+
+networks:
+  caddy_net:
+    external: true
