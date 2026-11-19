@@ -3,6 +3,7 @@
 <template>
   <UApp>
     <UContainer>
+      <Header />
       <Collections />
     </UContainer>
   </UApp>

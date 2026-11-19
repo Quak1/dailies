@@ -10,8 +10,6 @@ const collections = computed(() => {
 </script>
 
 <template>
-  <CreateCollectionModal />
-
   <div v-for="collection in collections">
     <Collection :collection="collection" />
   </div>

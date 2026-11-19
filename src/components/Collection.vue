@@ -9,13 +9,16 @@ const props = defineProps<{
 const { removeCollection } = useTasks();
 
 function handleDelete(collectionName: string) {
+  const ok = confirm(`Delete collection: ${collectionName}?`);
+  if (!ok) return;
+
   removeCollection(collectionName);
 }
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center gap-1">
+  <div class="mt-4">
+    <div class="flex items-center gap-1 mb-4">
       <h1>{{ collection.name }}</h1>
       <UButton
         label="Delete"
@@ -24,10 +27,9 @@ function handleDelete(collectionName: string) {
         size="xs"
         icon="i-lucide-trash"
         @click="handleDelete(collection.name)"
+        class="ml-auto"
       />
     </div>
-
-    <USeparator class="mb-4 mt-1" />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <Tasks
