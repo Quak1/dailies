@@ -1,20 +1,42 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { Category, CategoryType } from "../models";
+import { onUnmounted, ref } from "vue";
+import type { Category, CategoryType, Collection } from "../models";
 import { useTasks } from "../composables/useTasks";
+import { getDailyTarget, getWeeklyTarget } from "../utils";
+import { useCountdown } from "../composables/useCountdown";
 
 const props = defineProps<{
-  collectionName: string;
+  collection: Collection;
   type: CategoryType;
   category: Category;
 }>();
 
 const isEdit = ref(false);
 
-const { removeTask } = useTasks();
+const { removeTask, resetTasks } = useTasks();
+const { start, stop, reset, display } = useCountdown();
+
+if (props.type === "daily") {
+  start(() => {
+    resetTasks(props.collection.name, props.type);
+    return getDailyTarget(props.collection.daily.resetHour);
+  });
+} else if (props.type === "weekly") {
+  start(() => {
+    resetTasks(props.collection.name, props.type);
+    return getWeeklyTarget(
+      props.collection.weekly.resetDay,
+      props.collection.daily.resetHour,
+    );
+  });
+}
+
+onUnmounted(() => {
+  stop();
+});
 
 function handleDelete(id: string) {
-  removeTask(props.collectionName, props.type, id);
+  removeTask(props.collection.name, props.type, id);
 }
 </script>
 
@@ -30,8 +52,24 @@ function handleDelete(id: string) {
           icon="i-lucide-pencil"
         />
         <CreateTaskModal
-          :collection="collectionName"
+          :collection="collection.name"
           :type="type"
+          class="ml-auto"
+        />
+      </div>
+
+      <div
+        v-if="type === 'daily' || type === 'weekly'"
+        class="flex items-center gap-1 mt-1"
+      >
+        <p class="text-muted">
+          Reset in:
+          <span class="text-primary font-bold text-lg">{{ display }}</span>
+        </p>
+        <ModalEditResetTime
+          :collectionName="collection.name"
+          :type="type"
+          @update="reset"
           class="ml-auto"
         />
       </div>
@@ -53,7 +91,7 @@ function handleDelete(id: string) {
         />
         <Task
           :task="task"
-          :collection="collectionName"
+          :collection="collection.name"
           :category="type"
           class="w-full"
         />

@@ -93,6 +93,48 @@ function resetTasks(collectionName: string, type: CategoryType) {
   saveToStorage();
 }
 
+function setResetTime(
+  collectionName: string,
+  type: CategoryType,
+  hour: number,
+  day: number,
+) {
+  const collection = collections.value[collectionName];
+  if (!collection[type]) return;
+
+  const { utcDay, utcHour } = localToUTC(day, hour);
+  if (type === "daily") {
+    collection.daily.resetHour = utcHour;
+  } else if (type === "weekly") {
+    collection.weekly.resetHour = utcHour;
+    collection.weekly.resetDay = utcDay;
+  }
+
+  saveToStorage();
+}
+
+function localToUTC(weekday: number, hour: number) {
+  const now = new Date();
+  const d = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    hour,
+    0,
+    0,
+    0,
+  );
+
+  const daysAhead = (weekday - d.getDay() + 7) % 7;
+  d.setDate(d.getDate() + daysAhead);
+  if (d <= now) d.setDate(d.getDate() + 7);
+
+  return {
+    utcDay: d.getUTCDay(),
+    utcHour: d.getUTCHours(),
+  };
+}
+
 export function useTasks() {
   const stored = localStorage.getItem(storageKey);
 
@@ -114,5 +156,6 @@ export function useTasks() {
     removeTask,
     setTaskCount,
     resetTasks,
+    setResetTime,
   };
 }

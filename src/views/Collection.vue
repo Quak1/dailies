@@ -49,7 +49,7 @@ function handleDelete(collectionName: string) {
         :key="`${collection.name} - ${type}`"
         :type="type"
         :category="collection[type]"
-        :collectionName="collection.name"
+        :collection="collection"
         class="md:last:col-span-2"
       />
     </div>
