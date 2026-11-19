@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTasks } from "../composables/useTasks";
-import type { Collection } from "../models";
+import { categories, type Collection } from "../models";
 
 const props = defineProps<{
   collection: Collection;
@@ -27,19 +27,17 @@ function handleDelete(collectionName: string) {
       />
     </div>
 
-    <div
-      v-for="type in ['task', 'daily', 'weekly']"
-      :key="`${collection.name} - ${type}`"
-    >
-      <div class="flex items-center gap-1">
-        <h2>{{ collection[type].name }}</h2>
-        <CreateTaskModal :collection="collection.name" :type="type" />
-      </div>
-      <ul>
-        <li v-for="task in collection[type].tasks" :key="task.id">
-          <Task :task="task" :collection="collection.name" :category="type" />
-        </li>
-      </ul>
+    <USeparator class="mb-4 mt-1" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <Tasks
+        v-for="type in categories"
+        :key="`${collection.name} - ${type}`"
+        :type="type"
+        :category="collection[type]"
+        :collectionName="collection.name"
+        class="md:last:col-span-2"
+      />
     </div>
   </div>
 </template>

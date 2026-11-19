@@ -12,40 +12,42 @@ const props = defineProps<{
 
 const { addTask } = useTasks();
 
-const title = ref("");
-const description = ref("");
-const maxCount = ref(1);
+const state = ref({ title: "", description: "", maxCount: 1 });
 
 function handleSubmit() {
-  if (!title.value || maxCount.value <= 0) return;
+  if (!state.value.title || state.value.maxCount <= 0) return;
 
   addTask(props.collection, props.type, {
-    title: title.value,
-    description: description.value,
-    maxCount: maxCount.value,
+    title: state.value.title,
+    description: state.value.description,
+    maxCount: state.value.maxCount,
     count: 0,
   });
 
   open.value = false;
 }
+
+function handleClose() {
+  state.value = { title: "", description: "", maxCount: 1 };
+}
 </script>
 
 <template>
-  <UModal title="New Collection" v-model:open="open">
-    <UButton label="Add" variant="subtle" icon="i-lucide-plus" />
+  <UModal title="New Collection" v-model:open="open" @after:leave="handleClose">
+    <UButton label="Add" variant="subtle" size="lg" icon="i-lucide-plus" />
 
     <template #body>
       <UForm class="flex flex-col gap-2" @submit="handleSubmit">
         <UFormField label="Title">
-          <UInput v-model="title" required class="w-full" />
+          <UInput v-model="state.title" required class="w-full" />
         </UFormField>
 
         <UFormField label="Description">
-          <UInput v-model="description" class="w-full" />
+          <UInput v-model="state.description" class="w-full" />
         </UFormField>
 
         <UFormField label="Count">
-          <UInputNumber v-model="maxCount" :min="1" class="w-full" />
+          <UInputNumber v-model="state.maxCount" :min="1" class="w-full" />
         </UFormField>
 
         <UButton type="submit" label="Create" class="self-end" />

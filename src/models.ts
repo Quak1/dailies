@@ -29,5 +29,5 @@ export interface Collection {
   weekly: CategoryWeekly;
 }
 
-export const categories = ["task", "daily", "weekly"] as const;
+export const categories = ["daily", "weekly", "task"] as const;
 export type CategoryType = (typeof categories)[number];
