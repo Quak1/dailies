@@ -2,9 +2,9 @@
 
 <template>
   <UApp>
+    <Header />
     <UContainer>
-      <Header />
-      <Collections />
+      <RouterView />
     </UContainer>
   </UApp>
 </template>

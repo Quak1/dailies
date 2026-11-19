@@ -1,23 +1,35 @@
 <script setup lang="ts">
+import { useRoute, useRouter } from "vue-router";
 import { useTasks } from "../composables/useTasks";
-import { categories, type Collection } from "../models";
+import { categories } from "../models";
+import { computed } from "vue";
 
-const props = defineProps<{
-  collection: Collection;
-}>();
+const route = useRoute();
+const router = useRouter();
 
-const { removeCollection } = useTasks();
+const { getCollection, removeCollection } = useTasks();
+
+const collection = computed(() => {
+  const name = route.params.name;
+  if (!name || typeof name === "object") {
+    router.push("/");
+    return;
+  }
+
+  return getCollection(name);
+});
 
 function handleDelete(collectionName: string) {
   const ok = confirm(`Delete collection: ${collectionName}?`);
   if (!ok) return;
 
   removeCollection(collectionName);
+  router.push("/");
 }
 </script>
 
 <template>
-  <div class="mt-4">
+  <div v-if="collection" class="mt-4">
     <div class="flex items-center gap-1 mb-4">
       <h1>{{ collection.name }}</h1>
       <UButton

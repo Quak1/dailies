@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useTasks } from "../composables/useTasks";
+import { useRouter } from "vue-router";
 
 const open = defineModel<boolean>("open");
 
+const router = useRouter();
 const { createCollection } = useTasks();
 
 const name = ref("");
@@ -15,6 +17,7 @@ function handleSubmit() {
   createCollection(name.value, banner.value);
 
   open.value = false;
+  router.push("/collections/" + name.value);
 }
 </script>
 
