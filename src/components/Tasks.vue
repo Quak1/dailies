@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import type { Category, CategoryType, Collection } from "../models";
 import { useTasks } from "../composables/useTasks";
 import { getDailyTarget, getWeeklyTarget } from "../utils";
@@ -15,6 +15,19 @@ const isEdit = ref(false);
 
 const { removeTask, resetTasks } = useTasks();
 const { start, stop, reset, display } = useCountdown();
+
+const progress = computed(() =>
+  props.collection[props.type].tasks.reduce(
+    (acc, task) => (acc += task.count),
+    0,
+  ),
+);
+const progressMax = computed(() =>
+  props.collection[props.type].tasks.reduce(
+    (acc, task) => (acc += task.maxCount),
+    0,
+  ),
+);
 
 if (props.type === "daily") {
   start(() => {
@@ -43,35 +56,38 @@ function handleDelete(id: string) {
 <template>
   <UCard variant="subtle">
     <template #header>
-      <div class="flex items-center gap-2">
-        <h2>{{ category.name }}</h2>
-        <UButton
-          @click="isEdit = !isEdit"
-          variant="outline"
-          size="sm"
-          icon="i-lucide-pencil"
-        />
-        <CreateTaskModal
-          :collection="collection.name"
-          :type="type"
-          class="ml-auto"
-        />
-      </div>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <h2>{{ category.name }}</h2>
+          <UButton
+            @click="isEdit = !isEdit"
+            variant="outline"
+            size="sm"
+            icon="i-lucide-pencil"
+          />
+          <CreateTaskModal
+            :collection="collection.name"
+            :type="type"
+            class="ml-auto"
+          />
+        </div>
 
-      <div
-        v-if="type === 'daily' || type === 'weekly'"
-        class="flex items-center gap-1 mt-1"
-      >
-        <p class="text-muted">
-          Reset in:
-          <span class="text-primary font-bold text-lg">{{ display }}</span>
-        </p>
-        <ModalEditResetTime
-          :collectionName="collection.name"
-          :type="type"
-          @update="reset"
-          class="ml-auto"
-        />
+        <div v-if="type === 'daily' || type === 'weekly'">
+          <div class="flex items-center gap-1">
+            <p class="text-muted">
+              Reset in:
+              <span class="text-primary font-bold text-lg">{{ display }}</span>
+            </p>
+            <ModalEditResetTime
+              :collectionName="collection.name"
+              :type="type"
+              @update="reset"
+              class="ml-auto"
+            />
+          </div>
+        </div>
+
+        <UProgress :max="progressMax" v-model="progress" />
       </div>
     </template>
 
