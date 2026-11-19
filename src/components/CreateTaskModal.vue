@@ -39,7 +39,7 @@ function handleClose() {
     <template #body>
       <UForm class="flex flex-col gap-2" @submit="handleSubmit">
         <UFormField label="Title">
-          <UInput v-model="state.title" required class="w-full" />
+          <UInput v-model="state.title" required class="w-full" autofocus />
         </UFormField>
 
         <UFormField label="Description">

@@ -16,8 +16,11 @@ function handleSubmit() {
 
   createCollection(name.value, banner.value);
 
-  open.value = false;
   router.push("/collections/" + name.value);
+
+  name.value = "";
+  banner.value = "";
+  open.value = false;
 }
 </script>
 
@@ -28,7 +31,7 @@ function handleSubmit() {
     <template #body>
       <UForm class="flex flex-col gap-2" @submit="handleSubmit">
         <UFormField label="Name">
-          <UInput v-model="name" required class="w-full" />
+          <UInput v-model="name" required class="w-full" autofocus />
         </UFormField>
 
         <UFormField label="Banner" description="Image URL for the collection">
