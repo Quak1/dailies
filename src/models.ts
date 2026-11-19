@@ -14,11 +14,13 @@ export interface Category {
 
 export interface CategoryDaily extends Category {
   resetHour: number;
+  lastReset?: number;
 }
 
 export interface CategoryWeekly extends Category {
   resetHour: number;
   resetDay: number;
+  lastReset?: number;
 }
 
 export interface Collection {

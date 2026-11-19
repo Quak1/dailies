@@ -1,6 +1,7 @@
 import { ref } from "vue";
 
 import type { CategoryType, Collection, Task } from "../models";
+import { getLastDailyReset, getLastWeeklyReset } from "../utils";
 
 const storageKey = "collections";
 
@@ -25,8 +26,14 @@ function createCollection(name: string, banner?: string) {
     name: name,
     banner: banner,
     task: { name: "Tasks", tasks: [] },
-    daily: { name: "Dailies", tasks: [], resetHour: 0 },
-    weekly: { name: "Weeklies", tasks: [], resetHour: 0, resetDay: 0 },
+    daily: { name: "Dailies", tasks: [], resetHour: 0, lastReset: Date.now() },
+    weekly: {
+      name: "Weeklies",
+      tasks: [],
+      resetHour: 0,
+      resetDay: 0,
+      lastReset: Date.now(),
+    },
   };
 
   saveToStorage();
@@ -87,10 +94,60 @@ function setTaskCount(
 }
 
 function resetTasks(collectionName: string, type: CategoryType) {
-  collections.value[collectionName][type].tasks.forEach((task) => {
+  const collection = collections.value[collectionName];
+  if (!collection || !collection[type]) return;
+
+  collection[type].tasks.forEach((task) => {
     task.count = 0;
   });
+
+  if (type === "daily") {
+    collection.daily.lastReset = Date.now();
+  } else if (type === "weekly") {
+    collection.weekly.lastReset = Date.now();
+  }
+
   saveToStorage();
+}
+
+function checkAndReset(collectionName: string, type: CategoryType): boolean {
+  const collection = collections.value[collectionName];
+  if (!collection) return false;
+
+  if (type === "daily" && collection.daily) {
+    const lastReset = collection.daily.lastReset;
+    const lastScheduledReset = getLastDailyReset(collection.daily.resetHour);
+    if (lastReset === undefined || lastReset < lastScheduledReset.getTime()) {
+      resetTasks(collectionName, "daily");
+      return true;
+    }
+  } else if (type === "weekly" && collection.weekly) {
+    const lastReset = collection.weekly.lastReset;
+    const lastScheduledReset = getLastWeeklyReset(
+      collection.weekly.resetDay,
+      collection.weekly.resetHour,
+    );
+    if (lastReset === undefined || lastReset < lastScheduledReset.getTime()) {
+      resetTasks(collectionName, "weekly");
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function checkAndResetAll(): boolean {
+  let changed = false;
+  for (const collectionName of Object.keys(collections.value)) {
+    if (checkAndReset(collectionName, "daily")) changed = true;
+    if (checkAndReset(collectionName, "weekly")) changed = true;
+  }
+
+  if (changed) {
+    saveToStorage();
+  }
+
+  return changed;
 }
 
 function setResetTime(
@@ -100,20 +157,36 @@ function setResetTime(
   day: number,
 ) {
   const collection = collections.value[collectionName];
-  if (!collection[type]) return;
+  if (!collection || !collection[type]) return;
 
-  const { utcDay, utcHour } = localToUTC(day, hour);
   if (type === "daily") {
-    collection.daily.resetHour = utcHour;
+    collection.daily.resetHour = localToUTCDaily(hour);
+    collection.daily.lastReset = Date.now();
   } else if (type === "weekly") {
+    const { utcDay, utcHour } = localToUTCWeekly(day, hour);
     collection.weekly.resetHour = utcHour;
     collection.weekly.resetDay = utcDay;
+    collection.weekly.lastReset = Date.now();
   }
 
   saveToStorage();
 }
 
-function localToUTC(weekday: number, hour: number) {
+function localToUTCDaily(hour: number) {
+  const now = new Date();
+  const d = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    hour,
+    0,
+    0,
+    0,
+  );
+  return d.getUTCHours();
+}
+
+function localToUTCWeekly(weekday: number, hour: number) {
   const now = new Date();
   const d = new Date(
     now.getFullYear(),
@@ -147,6 +220,8 @@ export function useTasks() {
     }
   }
 
+  checkAndResetAll();
+
   return {
     getCollections,
     getCollection,
@@ -156,6 +231,8 @@ export function useTasks() {
     removeTask,
     setTaskCount,
     resetTasks,
+    checkAndReset,
+    checkAndResetAll,
     setResetTime,
   };
 }

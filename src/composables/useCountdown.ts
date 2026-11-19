@@ -12,10 +12,11 @@ export function useCountdown() {
   const remainingMs = ref(0);
 
   let intervalId: NodeJS.Timeout | null = null;
-  let getTarget: Function | null = null;
+  let getTarget: (() => Date) | null = null;
+  let onExpireCallback: (() => void) | null = null;
 
   const display = computed(() => {
-    const totalSeconds = Math.ceil(remainingMs.value / 1000);
+    const totalSeconds = Math.max(0, Math.ceil(remainingMs.value / 1000));
     const d = Math.floor(totalSeconds / secondsDay);
     const h = Math.floor((totalSeconds % secondsDay) / secondsHour);
     const m = Math.floor((totalSeconds % secondsHour) / 60);
@@ -29,16 +30,18 @@ export function useCountdown() {
     const left = target.value.getTime() - Date.now();
     if (left <= 0) {
       remainingMs.value = 0;
+      if (onExpireCallback) onExpireCallback();
       reset();
       return;
     }
     remainingMs.value = left;
   }
 
-  function start(getTargetFn: () => Date) {
+  function start(getTargetFn: () => Date, onExpire?: () => void) {
     getTarget = getTargetFn;
+    onExpireCallback = onExpire ?? null;
     target.value = getTarget();
-    remainingMs.value = target.value.getTime() - Date.now();
+    remainingMs.value = Math.max(0, target.value.getTime() - Date.now());
 
     stop();
     intervalId = setInterval(tick, 100);
@@ -50,7 +53,10 @@ export function useCountdown() {
   }
 
   function reset() {
-    if (getTarget) target.value = getTarget(target.value);
+    if (getTarget) {
+      target.value = getTarget();
+      remainingMs.value = Math.max(0, target.value.getTime() - Date.now());
+    }
   }
 
   return { start, stop, reset, display };

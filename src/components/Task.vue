@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useTasks } from "../composables/useTasks";
 import type { CategoryType, Task } from "../models";
 
@@ -13,6 +13,14 @@ const { setTaskCount } = useTasks();
 const checked = ref(props.task.count > 0);
 const count = ref(props.task.count);
 const isMax = computed(() => count.value === props.task.maxCount);
+
+watch(
+  () => props.task.count,
+  (newCount) => {
+    checked.value = newCount > 0;
+    count.value = newCount;
+  },
+);
 
 function handleCheck(value: boolean | "indeterminate") {
   setTaskCount(props.collection, props.category, props.task.id, Number(value));

@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const isEdit = ref(false);
 
-const { removeTask, resetTasks } = useTasks();
+const { removeTask, resetTasks, checkAndReset } = useTasks();
 const { start, stop, reset, display } = useCountdown();
 
 const progress = computed(() =>
@@ -30,22 +30,41 @@ const progressMax = computed(() =>
 );
 
 if (props.type === "daily") {
-  start(() => {
-    resetTasks(props.collection.name, props.type);
-    return getDailyTarget(props.collection.daily.resetHour);
-  });
+  checkAndReset(props.collection.name, "daily");
+  start(
+    () => getDailyTarget(props.collection.daily.resetHour),
+    () => {
+      resetTasks(props.collection.name, "daily");
+    },
+  );
 } else if (props.type === "weekly") {
-  start(() => {
-    resetTasks(props.collection.name, props.type);
-    return getWeeklyTarget(
-      props.collection.weekly.resetDay,
-      props.collection.daily.resetHour,
-    );
-  });
+  checkAndReset(props.collection.name, "weekly");
+  start(
+    () =>
+      getWeeklyTarget(
+        props.collection.weekly.resetDay,
+        props.collection.weekly.resetHour,
+      ),
+    () => {
+      resetTasks(props.collection.name, "weekly");
+    },
+  );
 }
+
+function handleVisibilityOrFocus() {
+  if (props.type === "daily" || props.type === "weekly") {
+    const wasReset = checkAndReset(props.collection.name, props.type);
+    if (wasReset) reset();
+  }
+}
+
+window.addEventListener("focus", handleVisibilityOrFocus);
+document.addEventListener("visibilitychange", handleVisibilityOrFocus);
 
 onUnmounted(() => {
   stop();
+  window.removeEventListener("focus", handleVisibilityOrFocus);
+  document.removeEventListener("visibilitychange", handleVisibilityOrFocus);
 });
 
 function handleDelete(id: string) {
