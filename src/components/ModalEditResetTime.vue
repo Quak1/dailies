@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useTasks } from "../composables/useTasks";
 import type { CategoryType } from "../models";
 
@@ -12,7 +12,7 @@ const open = defineModel<boolean>("open");
 
 const emit = defineEmits(["update"]);
 
-const { setResetTime } = useTasks();
+const { setResetTime, getCollection } = useTasks();
 
 const resetHour = ref(0);
 const resetDay = ref(0);
@@ -27,6 +27,43 @@ const items = [
   { label: "Sunday", value: 0 },
 ];
 
+function initValues() {
+  const collection = getCollection(props.collectionName);
+  if (!collection) return;
+
+  const now = new Date();
+  if (props.type === "daily" && collection.daily) {
+    const d = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        collection.daily.resetHour,
+      ),
+    );
+    resetHour.value = d.getHours();
+  } else if (props.type === "weekly" && collection.weekly) {
+    const d = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        collection.weekly.resetHour,
+      ),
+    );
+    const dayDiff = (collection.weekly.resetDay - d.getUTCDay() + 7) % 7;
+    d.setUTCDate(d.getUTCDate() + dayDiff);
+    resetHour.value = d.getHours();
+    resetDay.value = d.getDay();
+  }
+}
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    initValues();
+  }
+});
+
 function handleSubmit() {
   setResetTime(
     props.collectionName,
@@ -35,8 +72,6 @@ function handleSubmit() {
     resetDay.value,
   );
 
-  resetHour.value = 0;
-  resetDay.value = 0;
   open.value = false;
 
   emit("update");
